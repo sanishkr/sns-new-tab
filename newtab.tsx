@@ -1,6 +1,12 @@
-import "./style.css"
+
+
+
+import "./style.css";
+
+
 
 import { useEffect, useState } from "react"
+import bgImage from "url:./assets/bg.jpeg"
 
 function NewTab() {
   const [currentTime, setCurrentTime] = useState(new Date())
@@ -16,9 +22,9 @@ function NewTab() {
 
   useEffect(() => {
     const hour = currentTime.getHours()
-    if (hour < 12) {
+    if (hour >= 5 && hour < 12) {
       setGreeting("Good morning")
-    } else if (hour < 18) {
+    } else if (hour >= 12 && hour < 18) {
       setGreeting("Good afternoon")
     } else {
       setGreeting("Good evening")
@@ -29,8 +35,7 @@ function NewTab() {
     return date.toLocaleTimeString("en-US", {
       hour12: false,
       hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit"
+      minute: "2-digit"
     })
   }
 
@@ -67,34 +72,35 @@ function NewTab() {
 
   return (
     <div
-      className={`min-h-screen ${currentBg} flex flex-col items-center justify-center p-8`}>
-      <div className="text-center text-white mb-12">
-        <h1 className="text-6xl font-light mb-4 opacity-90">
+      className={`min-h-screen ${currentBg} flex flex-col items-center justify-center p-8 bg-cover bg-center bg-no-repeat relative`}
+      style={{
+        backgroundImage: `url('${bgImage}')`,
+        backgroundBlendMode: "overlay",
+        backgroundSize: "cover"
+      }}>
+      {/* Dark overlay */}
+      <div
+        className="absolute inset-0"
+        style={{
+          backgroundColor: "#000000bf",
+          opacity: 0.8
+        }}
+      />
+
+      {/* Content */}
+      <div className="relative z-10 text-center text-white">
+        <h1 className="text-[10rem] font-semibold mb-6 leading-none">
           {formatTime(currentTime)}
         </h1>
-        <p className="text-2xl font-light opacity-80">
+        <p className="text-3xl font-light tracking-wider opacity-80">
           {formatDate(currentTime)}
         </p>
-        <p className="text-3xl font-light mt-4 opacity-90">{greeting}!</p>
+        <p className="text-5xl font-semibold mt-6">{greeting}, sns!</p>
       </div>
 
-      <div className="grid grid-cols-3 gap-6 max-w-2xl">
-        {quickLinks.map((link, index) => (
-          <a
-            key={index}
-            href={link.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-white bg-opacity-20 backdrop-blur-sm rounded-2xl p-6 text-center text-white hover:bg-opacity-30 transition-all duration-300 transform hover:scale-105 hover:shadow-lg">
-            <div className="text-4xl mb-2">{link.icon}</div>
-            <div className="text-lg font-medium">{link.name}</div>
-          </a>
-        ))}
-      </div>
-
-      <div className="mt-12 text-white text-center opacity-70">
+      {/* <div className="relative z-10 mt-12 text-white text-center opacity-70">
         <p className="text-lg">Have a productive day! 🚀</p>
-      </div>
+      </div> */}
     </div>
   )
 }
