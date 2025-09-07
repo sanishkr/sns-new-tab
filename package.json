@@ -1,8 +1,8 @@
 {
   "name": "sns-new-tab",
-  "displayName": "Sns New Tab",
+  "displayName": "Sns new tab",
   "version": "0.0.1",
-  "description": "A new tab extension",
+  "description": "A new tab extension by Sns",
   "author": "Sns",
   "scripts": {
     "dev": "plasmo dev",
