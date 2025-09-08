@@ -14,7 +14,7 @@ This is a Chrome extension built with Plasmo framework and styled with Tailwind 
 ## Project Structure
 
 - `newtab.tsx` - Main new tab page component
-- `popup.tsx` - Extension popup component
+- `components/` - Modular React components
 - `style.css` - Tailwind CSS imports
 - `tailwind.config.js` - Tailwind configuration
 - `postcss.config.js` - PostCSS configuration
@@ -37,7 +37,7 @@ This is a Chrome extension built with Plasmo framework and styled with Tailwind 
 
 ## Chrome Extension Specific
 
-- The `newtab.tsx` file will replace the default Chrome new tab page
-- The `popup.tsx` file creates the extension popup when clicking the extension icon
+- The `newtab.tsx` file replaces the default Chrome new tab page
+- Clean, popup-free extension focused on the new tab experience
 - Make sure to follow Chrome extension manifest v3 guidelines
 - Test thoroughly in Chrome browser development mode

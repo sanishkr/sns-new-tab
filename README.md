@@ -63,7 +63,7 @@ This creates a production bundle ready for the Chrome Web Store.
 ```
 sns-new-tab/
 ├── newtab.tsx          # Main new tab page component
-├── popup.tsx           # Extension popup interface
+├── components/         # Modular React components
 ├── style.css           # Tailwind CSS imports
 ├── tailwind.config.js  # Tailwind configuration
 ├── postcss.config.js   # PostCSS configuration
