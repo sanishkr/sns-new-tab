@@ -28,7 +28,7 @@ const gradients = [
 
 export function BackgroundManager({
   children,
-  overlayOpacity = 0.6,
+  overlayOpacity = 0.8,
   useDynamicImages = true,
   category = "nature,landscape,mountains"
 }: BackgroundManagerProps) {
@@ -56,7 +56,7 @@ export function BackgroundManager({
       <div
         className="absolute top-0 left-0 w-full h-full"
         style={{
-          backgroundColor: "rgba(0, 0, 0, 0.6)",
+          backgroundColor: "rgba(0, 0, 0, 0.85)",
           opacity: currentImage.source === "local" ? 0.8 : overlayOpacity,
           zIndex: 1
         }}
