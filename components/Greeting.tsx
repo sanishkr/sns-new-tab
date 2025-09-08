@@ -89,7 +89,7 @@ export function Greeting({ className = "" }: GreetingProps) {
           onChange={(e) => setTempName(e.target.value)}
           onKeyDown={handleKeyDown}
           onBlur={handleInputBlur}
-          className="bg-transparent border-b-2 border-white/50 outline-none text-white placeholder-white/70 min-w-[90px] max-w-[100px] focus:max-w-[100px] "
+          className="bg-transparent border-b-4 border-white/80 outline-none text-white placeholder-white/70 min-w-[90px] max-w-[100px] focus:max-w-[100px] "
           placeholder="user"
           maxLength={20}
         />
