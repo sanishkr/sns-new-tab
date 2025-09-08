@@ -20,7 +20,7 @@ function NewTab() {
         <div className="text-center">
           <Clock className="text-[10rem] font-semibold mb-6 leading-none" />
           <DateDisplay className="text-3xl font-light tracking-wider opacity-80" />
-          <Greeting name="sns" className="text-4xl font-light tracking-wide opacity-90 mt-6" />
+          <Greeting className="text-4xl font-light tracking-wide opacity-90 mt-6" />
         </div>
 
         {/* Quote Section - Bottom of screen */}
