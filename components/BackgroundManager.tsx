@@ -1,7 +1,8 @@
-import React, { type ReactNode } from "react"
+import React, { useEffect, useState, type ReactNode } from "react"
 import bgImage from "url:../assets/bg.jpeg"
 
 import { useDailyImage } from "../utils"
+import { DropdownMenu } from "./DropdownMenu"
 
 interface BackgroundManagerProps {
   children: ReactNode
@@ -38,6 +39,23 @@ export function BackgroundManager({
     localImageUrl: bgImage
   })
 
+  const [hasFilter, setHasFilter] = useState(true)
+
+  // Load filter preference from localStorage on mount
+  useEffect(() => {
+    const savedHasFilter = localStorage.getItem("hasFilter")
+    if (savedHasFilter !== null) {
+      setHasFilter(JSON.parse(savedHasFilter))
+    }
+  }, [])
+
+  const toggleFilter = () => {
+    const newHasFilter = !hasFilter
+    setHasFilter(newHasFilter)
+    // Save preference to localStorage
+    localStorage.setItem("hasFilter", JSON.stringify(newHasFilter))
+  }
+
   const currentGradient = gradients[getDayOfYear() % gradients.length]
 
   return (
@@ -52,12 +70,17 @@ export function BackgroundManager({
         backgroundBlendMode:
           currentImage.source === "local" ? "overlay" : "normal"
       }}>
-      {/* Dark overlay */}
+      {/* Dark overlay with optional filter */}
       <div
-        className="absolute top-0 left-0 w-full h-full"
+        className={"absolute top-0 left-0 w-full h-full"}
         style={{
-          backgroundColor: "rgba(0, 0, 0, 0.85)",
-          opacity: currentImage.source === "local" ? 0.8 : overlayOpacity,
+          backgroundColor: hasFilter ? "rgba(0, 0, 0, 0.85)" : "transparent",
+          opacity:
+            currentImage.source === "local"
+              ? 0.8
+              : hasFilter
+                ? overlayOpacity
+                : 1,
           zIndex: 1
         }}
       />
@@ -72,9 +95,9 @@ export function BackgroundManager({
         </div>
       )}
 
-      {/* Photographer credit */}
+      {/* Photographer credit with menu */}
       {currentImage.photographer && currentImage.source !== "local" && (
-        <div className="absolute bottom-4 right-4 z-20">
+        <div className="absolute bottom-4 right-4 z-20 flex items-center gap-2 group">
           <div className="bg-black/30 backdrop-blur-sm rounded-lg px-3 py-1 text-white/70 text-xs">
             Photo by{" "}
             <a
@@ -93,6 +116,19 @@ export function BackgroundManager({
               {currentImage.source === "unsplash" ? "Unsplash" : "Pexels"}
             </a>
           </div>
+
+          {/* Three dots menu (horizontal) - only visible on hover */}
+          <DropdownMenu
+            items={[
+              {
+                label: hasFilter ? "Remove filter" : "Add filter",
+                onClick: toggleFilter,
+                icon: hasFilter ? "🔆" : "🔅"
+              }
+            ]}
+            position="above"
+            className="opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          />
         </div>
       )}
 

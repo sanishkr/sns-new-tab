@@ -9,9 +9,16 @@ interface MenuItem {
 interface DropdownMenuProps {
   items: MenuItem[]
   className?: string
+  size?: "small" | "normal"
+  position?: "below" | "above"
 }
 
-export function DropdownMenu({ items, className = "" }: DropdownMenuProps) {
+export function DropdownMenu({
+  items,
+  className = "",
+  size = "normal",
+  position = "below"
+}: DropdownMenuProps) {
   const [isOpen, setIsOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
@@ -43,20 +50,29 @@ export function DropdownMenu({ items, className = "" }: DropdownMenuProps) {
 
   return (
     <div className={`${className}`}>
-      {/* Three dots button */}
+      {/* Dots button */}
       <button
         ref={buttonRef}
         onClick={handleToggle}
-        className="p-2 rounded-full hover:bg-white/10 transition-colors duration-200">
+        className="p-1 rounded-full hover:bg-white/10 transition-colors duration-200">
         <svg
-          width="20"
-          height="20"
+          width={size === "small" ? "16" : "20"}
+          height={size === "small" ? "16" : "20"}
           viewBox="0 0 24 24"
           fill="currentColor"
           className="text-white/70 hover:text-white">
-          <circle cx="12" cy="5" r="2" />
-          <circle cx="12" cy="12" r="2" />
-          <circle cx="12" cy="19" r="2" />
+          {size === "small" ? (
+            <>
+              <circle cx="7" cy="12" r="2" />
+              <circle cx="17" cy="12" r="2" />
+            </>
+          ) : (
+            <>
+              <circle cx="5" cy="12" r="2" />
+              <circle cx="12" cy="12" r="2" />
+              <circle cx="19" cy="12" r="2" />
+            </>
+          )}
         </svg>
       </button>
 
@@ -64,7 +80,9 @@ export function DropdownMenu({ items, className = "" }: DropdownMenuProps) {
       {isOpen && (
         <div
           ref={menuRef}
-          className="absolute top-full mt-2 right-0 bg-black/80 backdrop-blur-lg rounded-lg shadow-lg border border-white/10 min-w-[140px] z-50">
+          className={`absolute ${
+            position === "above" ? "bottom-full mb-2" : "top-full mt-2"
+          } right-0 bg-black/80 backdrop-blur-lg rounded-lg shadow-lg border border-white/10 min-w-[140px] z-50`}>
           {items.map((item, index) => (
             <button
               key={index}
