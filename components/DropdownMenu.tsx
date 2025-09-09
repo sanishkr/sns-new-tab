@@ -1,4 +1,8 @@
-import React, { useEffect, useRef, useState } from "react"
+import React, { useEffect, useRef, useState } from "react";
+
+
+
+
 
 interface MenuItem {
   label: string
@@ -11,13 +15,15 @@ interface DropdownMenuProps {
   className?: string
   size?: "small" | "normal"
   position?: "below" | "above"
+  horizontalAlign?: "left" | "right"
 }
 
 export function DropdownMenu({
   items,
   className = "",
   size = "normal",
-  position = "below"
+  position = "below",
+  horizontalAlign = "left"
 }: DropdownMenuProps) {
   const [isOpen, setIsOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
@@ -82,7 +88,7 @@ export function DropdownMenu({
           ref={menuRef}
           className={`absolute ${
             position === "above" ? "bottom-full mb-2" : "top-full mt-2"
-          } right-0 bg-black/80 backdrop-blur-lg rounded-lg shadow-lg border border-white/10 min-w-[140px] z-50`}>
+          } ${horizontalAlign === "left" ? "left-0" : "right-0"} bg-black/80 backdrop-blur-lg rounded-lg shadow-lg border border-white/10 min-w-[140px] z-50`}>
           {items.map((item, index) => (
             <button
               key={index}

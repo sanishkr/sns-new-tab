@@ -127,6 +127,7 @@ export function BackgroundManager({
               }
             ]}
             position="above"
+            horizontalAlign="right"
             className="opacity-0 group-hover:opacity-100 transition-opacity duration-300"
           />
         </div>
