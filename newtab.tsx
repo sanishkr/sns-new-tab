@@ -1,3 +1,5 @@
+import { useState } from "react"
+
 import {
   BackgroundManager,
   Clock,
@@ -6,10 +8,14 @@ import {
   QuoteSection
 } from "~components"
 
-// import { useEffect } from "react"
 import "./style.css"
 
 function NewTab() {
+  const [showDate, setShowDate] = useState(true)
+
+  const toggleDateVisibility = () => {
+    setShowDate(!showDate)
+  }
   // useEffect(() => {
   //   // Set viewport meta tag programmatically to prevent zoom
   //   const setViewportMeta = () => {
@@ -132,10 +138,15 @@ function NewTab() {
       overlayOpacity={0.8}>
       <div className="min-h-screen flex flex-col items-center justify-center p-8 text-white">
         {/* Main content */}
-        <div className="text-center">
-          <Clock className="text-[10rem] font-semibold mb-6 leading-none" />
-          <DateDisplay className="text-3xl font-light tracking-wider opacity-80" />
-          <Greeting className="text-4xl font-light tracking-wide opacity-90 mt-6" />
+        <div className="text-center flex flex-col items-center">
+          <Clock
+            onToggleDateVisibility={toggleDateVisibility}
+            showDate={showDate}
+          />
+          {showDate && (
+            <DateDisplay className="text-3xl font-light tracking-wider opacity-80 mb-6" />
+          )}
+          <Greeting className="text-4xl font-light tracking-wide opacity-90" />
         </div>
 
         {/* Quote Section - Bottom of screen */}

@@ -55,7 +55,7 @@ export function Greeting({ className = "" }: GreetingProps) {
   }
 
   const saveName = () => {
-    const newName = tempName.trim() || "sns"
+    const newName = tempName.trim() || DEFAULT_USER_NAME
     setDisplayName(newName)
     localStorage.setItem("userName", newName)
     setIsEditing(false)
@@ -79,7 +79,7 @@ export function Greeting({ className = "" }: GreetingProps) {
   }
 
   return (
-    <h1 className={`text-5xl font-semibold mt-6 ${className}`}>
+    <h1 className={`text-5xl font-semibold ${className}`}>
       {greeting}
       {isEditing ? (
         <input

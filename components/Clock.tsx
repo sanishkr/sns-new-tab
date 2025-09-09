@@ -1,10 +1,20 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
+
+
+
+import { DropdownMenu } from "./DropdownMenu"
 
 interface ClockProps {
   className?: string
+  onToggleDateVisibility?: () => void
+  showDate?: boolean
 }
 
-export function Clock({ className = "" }: ClockProps) {
+export function Clock({
+  className = "",
+  onToggleDateVisibility,
+  showDate = true
+}: ClockProps) {
   const [currentTime, setCurrentTime] = useState(new Date())
 
   useEffect(() => {
@@ -23,9 +33,25 @@ export function Clock({ className = "" }: ClockProps) {
     })
   }
 
+  const clockMenuItems = [
+    {
+      label: showDate ? "Hide date" : "Show date",
+      onClick: () => onToggleDateVisibility?.(),
+      icon: showDate ? "🙈" : "📅"
+    }
+  ]
+
   return (
-    <h1 className={`text-[10rem] font-semibold mb-6 leading-none ${className}`}>
-      {formatTime(currentTime)}
-    </h1>
+    <div className={`relative group ${className}`}>
+      <h1 className="text-[10rem] font-semibold mb-6 leading-none -ml-3">
+        {formatTime(currentTime)}
+      </h1>
+
+      {/* Three dots menu - only visible on hover */}
+      <DropdownMenu
+        items={clockMenuItems}
+        className="absolute top-16 left-full ml-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+      />
+    </div>
   )
 }
