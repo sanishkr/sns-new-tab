@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 import {
   BackgroundManager,
@@ -13,8 +13,19 @@ import "./style.css"
 function NewTab() {
   const [showDate, setShowDate] = useState(true)
 
+  // Load date visibility preference from localStorage on mount
+  useEffect(() => {
+    const savedShowDate = localStorage.getItem("showDate")
+    if (savedShowDate !== null) {
+      setShowDate(JSON.parse(savedShowDate))
+    }
+  }, [])
+
   const toggleDateVisibility = () => {
-    setShowDate(!showDate)
+    const newShowDate = !showDate
+    setShowDate(newShowDate)
+    // Save preference to localStorage
+    localStorage.setItem("showDate", JSON.stringify(newShowDate))
   }
   // useEffect(() => {
   //   // Set viewport meta tag programmatically to prevent zoom
