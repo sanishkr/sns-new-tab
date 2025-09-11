@@ -1,10 +1,13 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
+
+
 
 import {
   BackgroundManager,
   Clock,
   DateDisplay,
   Greeting,
+  QuickLinks,
   QuoteSection
 } from "~components"
 
@@ -147,6 +150,9 @@ function NewTab() {
       useDynamicImages={true}
       category="nature,landscape,mountains,ocean"
       overlayOpacity={0.8}>
+      {/* Quick Links - Top left */}
+      <QuickLinks />
+
       <div className="min-h-screen flex flex-col items-center justify-center p-8 text-white">
         {/* Main content */}
         <div className="text-center flex flex-col items-center">
