@@ -5,7 +5,7 @@ Key Features:
 Real-Time Clock: Stay on track with a beautifully displayed clock.
 Dynamic Greetings: Receive personalized greetings based on the time of day.
 Daily Rotating Backgrounds: Enjoy stunning gradient backgrounds that change every day.
-Quick Links: Access your favorite websites with a single click. (coming soon)
+Quick Links: Access your favorite websites with a single click.
 Responsive Design: Optimized for all screen sizes, ensuring a seamless experience.
 
 Why Choose This Extension?
