@@ -176,7 +176,7 @@ export function QuickLinks({ className = "" }: QuickLinksProps) {
           </div>
 
           {/* Quick Links List */}
-          <div className="space-y-2 mb-3">
+          <div className="space-y-2 mb-3 max-h-[473px] overflow-y-auto quick-links-scroll">
             {quickLinks.map((link, index) => (
               <div
                 key={link.id}

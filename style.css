@@ -88,3 +88,26 @@ button, a, [role="button"], .cursor-pointer {
   pointer-events: auto;
   touch-action: manipulation;
 }
+
+/* Custom scrollbar for quick links */
+.quick-links-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.quick-links-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.quick-links-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.quick-links-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.quick-links-scroll::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
