@@ -146,7 +146,10 @@ export function QuickLinks({ className = "" }: QuickLinksProps) {
         className="bg-black/30 backdrop-blur-sm hover:bg-black/50 transition-colors duration-200 rounded-lg p-3 text-white/80 hover:text-white"
         title="Quick Links">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z" />
+          <rect x="3" y="3" width="7" height="7" rx="1"/>
+          <rect x="14" y="3" width="7" height="7" rx="1"/>
+          <rect x="3" y="14" width="7" height="7" rx="1"/>
+          <rect x="14" y="14" width="7" height="7" rx="1"/>
         </svg>
       </button>
 
