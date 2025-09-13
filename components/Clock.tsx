@@ -8,12 +8,16 @@ interface ClockProps {
   className?: string
   onToggleDateVisibility?: () => void
   showDate?: boolean
+  onToggleQuotesVisibility?: () => void
+  showQuotes?: boolean
 }
 
 export function Clock({
   className = "",
   onToggleDateVisibility,
-  showDate = true
+  showDate = true,
+  onToggleQuotesVisibility,
+  showQuotes = true
 }: ClockProps) {
   const [currentTime, setCurrentTime] = useState(new Date())
 
@@ -38,6 +42,11 @@ export function Clock({
       label: showDate ? "Hide date" : "Show date",
       onClick: () => onToggleDateVisibility?.(),
       icon: showDate ? "🙈" : "📅"
+    },
+    {
+      label: showQuotes ? "Hide quotes" : "Show quotes",
+      onClick: () => onToggleQuotesVisibility?.(),
+      icon: showQuotes ? "💭" : "📝"
     }
   ]
 

@@ -15,12 +15,18 @@ import "./style.css"
 
 function NewTab() {
   const [showDate, setShowDate] = useState(true)
+  const [showQuotes, setShowQuotes] = useState(true)
 
   // Load date visibility preference from localStorage on mount
   useEffect(() => {
     const savedShowDate = localStorage.getItem("showDate")
     if (savedShowDate !== null) {
       setShowDate(JSON.parse(savedShowDate))
+    }
+    
+    const savedShowQuotes = localStorage.getItem("showQuotes")
+    if (savedShowQuotes !== null) {
+      setShowQuotes(JSON.parse(savedShowQuotes))
     }
   }, [])
 
@@ -29,6 +35,13 @@ function NewTab() {
     setShowDate(newShowDate)
     // Save preference to localStorage
     localStorage.setItem("showDate", JSON.stringify(newShowDate))
+  }
+
+  const toggleQuotesVisibility = () => {
+    const newShowQuotes = !showQuotes
+    setShowQuotes(newShowQuotes)
+    // Save preference to localStorage
+    localStorage.setItem("showQuotes", JSON.stringify(newShowQuotes))
   }
   // useEffect(() => {
   //   // Set viewport meta tag programmatically to prevent zoom
@@ -159,6 +172,8 @@ function NewTab() {
           <Clock
             onToggleDateVisibility={toggleDateVisibility}
             showDate={showDate}
+            onToggleQuotesVisibility={toggleQuotesVisibility}
+            showQuotes={showQuotes}
           />
           {showDate && (
             <DateDisplay className="text-3xl font-light tracking-wider opacity-80 mb-6" />
@@ -167,7 +182,9 @@ function NewTab() {
         </div>
 
         {/* Quote Section - Bottom of screen */}
-        <QuoteSection className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white" />
+        {showQuotes && (
+          <QuoteSection className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white" />
+        )}
       </div>
     </BackgroundManager>
   )
