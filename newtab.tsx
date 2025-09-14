@@ -2,31 +2,39 @@ import { useEffect, useState } from "react";
 
 
 
-import {
-  BackgroundManager,
-  Clock,
-  DateDisplay,
-  Greeting,
-  QuickLinks,
-  QuoteSection
-} from "~components"
+import { BackgroundManager, Clock, DateDisplay, Greeting, QuickLinks, QuoteSection, WeatherWidget } from "~components";
 
-import "./style.css"
+
+
+
+
+
+import "./style.css";
+
+
+
+
 
 function NewTab() {
   const [showDate, setShowDate] = useState(true)
   const [showQuotes, setShowQuotes] = useState(true)
+  const [showWeather, setShowWeather] = useState(false)
 
-  // Load date visibility preference from localStorage on mount
+  // Load preferences from localStorage on mount
   useEffect(() => {
     const savedShowDate = localStorage.getItem("showDate")
     if (savedShowDate !== null) {
       setShowDate(JSON.parse(savedShowDate))
     }
-    
+
     const savedShowQuotes = localStorage.getItem("showQuotes")
     if (savedShowQuotes !== null) {
       setShowQuotes(JSON.parse(savedShowQuotes))
+    }
+
+    const savedShowWeather = localStorage.getItem("showWeather")
+    if (savedShowWeather !== null) {
+      setShowWeather(JSON.parse(savedShowWeather))
     }
   }, [])
 
@@ -42,6 +50,13 @@ function NewTab() {
     setShowQuotes(newShowQuotes)
     // Save preference to localStorage
     localStorage.setItem("showQuotes", JSON.stringify(newShowQuotes))
+  }
+
+  const toggleWeatherVisibility = () => {
+    const newShowWeather = !showWeather
+    setShowWeather(newShowWeather)
+    // Save preference to localStorage
+    localStorage.setItem("showWeather", JSON.stringify(newShowWeather))
   }
   // useEffect(() => {
   //   // Set viewport meta tag programmatically to prevent zoom
@@ -166,6 +181,9 @@ function NewTab() {
       {/* Quick Links - Top left */}
       <QuickLinks />
 
+      {/* Weather Widget - Top right */}
+      {showWeather && <WeatherWidget />}
+
       <div className="min-h-screen flex flex-col items-center justify-center p-8 text-white">
         {/* Main content */}
         <div className="text-center flex flex-col items-center">
@@ -174,6 +192,8 @@ function NewTab() {
             showDate={showDate}
             onToggleQuotesVisibility={toggleQuotesVisibility}
             showQuotes={showQuotes}
+            onToggleWeatherVisibility={toggleWeatherVisibility}
+            showWeather={showWeather}
           />
           {showDate && (
             <DateDisplay className="text-3xl font-light tracking-wider opacity-80 mb-6" />
