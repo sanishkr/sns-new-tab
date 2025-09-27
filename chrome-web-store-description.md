@@ -11,4 +11,6 @@ Responsive Design: Optimized for all screen sizes, ensuring a seamless experienc
 Why Choose This Extension?
 Our extension is lightweight, fast, and designed with user experience in mind. Whether you're looking for a productivity boost or a visually pleasing new tab, this extension has you covered.
 
+Note: The extension is also available for firefox at https://addons.mozilla.org/en-GB/firefox/addon/sns-new-tab/
+
 Install now and make your new tab page as unique as you are!
