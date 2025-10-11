@@ -44,12 +44,14 @@ export function QuickLinks({ className = "" }: QuickLinksProps) {
   const [draggedItem, setDraggedItem] = useState<QuickLink | null>(null)
   const [isEditing, setIsEditing] = useState(false)
   const [newLink, setNewLink] = useState({ name: "", url: "" })
+  const [isIconView, setIsIconView] = useState(false)
   const panelRef = useRef<HTMLDivElement>(null)
 
   // Load quick links and panel state from localStorage
   useEffect(() => {
     const savedLinks = localStorage.getItem("quickLinks")
     const savedIsOpen = localStorage.getItem("quickLinksOpen")
+    const savedIconView = localStorage.getItem("quickLinksIconView")
 
     if (savedLinks) {
       setQuickLinks(JSON.parse(savedLinks))
@@ -57,12 +59,21 @@ export function QuickLinks({ className = "" }: QuickLinksProps) {
     if (savedIsOpen !== null) {
       setIsOpen(JSON.parse(savedIsOpen))
     }
+    if (savedIconView !== null) {
+      setIsIconView(JSON.parse(savedIconView))
+    }
   }, [])
 
   // Save state to localStorage
   const saveToStorage = (links: QuickLink[], isOpenState: boolean) => {
     localStorage.setItem("quickLinks", JSON.stringify(links))
     localStorage.setItem("quickLinksOpen", JSON.stringify(isOpenState))
+  }
+
+  const toggleViewMode = () => {
+    const newIconView = !isIconView
+    setIsIconView(newIconView)
+    localStorage.setItem("quickLinksIconView", JSON.stringify(newIconView))
   }
 
   const togglePanel = () => {
@@ -161,66 +172,128 @@ export function QuickLinks({ className = "" }: QuickLinksProps) {
           style={{ backgroundColor: "#0000007d" }}>
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-white font-medium text-sm">Quick Links</h3>
-            <button
-              onClick={() => setIsEditing(!isEditing)}
-              className="text-white/60 hover:text-white transition-colors"
-              title="Add new link">
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="currentColor">
-                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
-              </svg>
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={toggleViewMode}
+                className="text-white/60 hover:text-white transition-colors"
+                title={isIconView ? "Show detailed view" : "Show icon view"}>
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="currentColor">
+                  {isIconView ? (
+                    <path d="M3 4h18v2H3V4zm0 7h18v2H3v-2zm0 7h18v2H3v-2z" />
+                  ) : (
+                    <path d="M3 3h8v8H3V3zm10 0h8v8h-8V3zM3 13h8v8H3v-8zm10 0h8v8h-8v-8z" />
+                  )}
+                </svg>
+              </button>
+              <button
+                onClick={() => setIsEditing(!isEditing)}
+                className="text-white/60 hover:text-white transition-colors"
+                title="Add new link">
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="currentColor">
+                  <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+                </svg>
+              </button>
+            </div>
           </div>
 
           {/* Quick Links List */}
-          <div className="space-y-1 mb-2 max-h-[473px] overflow-y-auto quick-links-scroll">
+          <div className={isIconView ? "grid grid-cols-6 gap-2 mb-2 max-h-[473px] overflow-y-auto quick-links-scroll pt-1 pr-1" : "space-y-1 mb-2 max-h-[473px] overflow-y-auto quick-links-scroll"}>
             {quickLinks.map((link, index) => (
-              <div
-                key={link.id}
-                draggable
-                onDragStart={(e) => handleDragStart(e, link)}
-                onDragOver={handleDragOver}
-                onDrop={(e) => handleDrop(e, index)}
-                className="flex items-center gap-2 p-1.5 rounded-md hover:bg-white/10 cursor-pointer transition-colors group"
-                onClick={() => openLink(link.url)}>
-                <img
-                  src={getFaviconUrl(link.url)}
-                  alt=""
-                  className="w-4 h-4 flex-shrink-0"
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement
-                    target.style.display = "none"
-                    target.nextElementSibling!.classList.remove("hidden")
-                  }}
-                />
-                <span className="hidden text-[10px]">🌐</span>
-                <div className="flex-1 min-w-0">
-                  <div className="text-white/90 text-xs font-medium truncate">
-                    {link.name}
+              isIconView ? (
+                // Icon-only view
+                <div
+                  key={link.id}
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, link)}
+                  onDragOver={handleDragOver}
+                  onDrop={(e) => handleDrop(e, index)}
+                  className="relative group"
+                  title={link.name}>
+                  <div
+                    onClick={() => openLink(link.url)}
+                    className="flex items-center justify-center p-2 rounded-md hover:bg-white/10 cursor-pointer transition-colors aspect-square">
+                    <img
+                      src={getFaviconUrl(link.url)}
+                      alt={link.name}
+                      className="w-6 h-6"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement
+                        target.style.display = "none"
+                        target.nextElementSibling!.classList.remove("hidden")
+                      }}
+                    />
+                    <span className="hidden text-sm">🌐</span>
                   </div>
-                  <div className="text-white/60 text-[10px] truncate">
-                    {link.url.replace(/^https?:\/\//, "")}
-                  </div>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      removeLink(link.id)
+                    }}
+                    className="absolute -top-1 -right-1 opacity-0 group-hover:opacity-100 bg-red-500/80 hover:bg-red-500 text-white rounded-full p-0.5 transition-all duration-200"
+                    title="Remove link">
+                    <svg
+                      width="10"
+                      height="10"
+                      viewBox="0 0 24 24"
+                      fill="currentColor">
+                      <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+                    </svg>
+                  </button>
                 </div>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    removeLink(link.id)
-                  }}
-                  className="opacity-0 group-hover:opacity-100 text-white/40 hover:text-red-400 transition-all duration-200"
-                  title="Remove link">
-                  <svg
-                    width="12"
-                    height="12"
-                    viewBox="0 0 24 24"
-                    fill="currentColor">
-                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
-                  </svg>
-                </button>
-              </div>
+              ) : (
+                // Detailed view
+                <div
+                  key={link.id}
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, link)}
+                  onDragOver={handleDragOver}
+                  onDrop={(e) => handleDrop(e, index)}
+                  className="flex items-center gap-2 p-1.5 rounded-md hover:bg-white/10 cursor-pointer transition-colors group"
+                  onClick={() => openLink(link.url)}>
+                  <img
+                    src={getFaviconUrl(link.url)}
+                    alt=""
+                    className="w-4 h-4 flex-shrink-0"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement
+                      target.style.display = "none"
+                      target.nextElementSibling!.classList.remove("hidden")
+                    }}
+                  />
+                  <span className="hidden text-[10px]">🌐</span>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-white/90 text-xs font-medium truncate">
+                      {link.name}
+                    </div>
+                    <div className="text-white/60 text-[10px] truncate">
+                      {link.url.replace(/^https?:\/\//, "")}
+                    </div>
+                  </div>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      removeLink(link.id)
+                    }}
+                    className="opacity-0 group-hover:opacity-100 text-white/40 hover:text-red-400 transition-all duration-200"
+                    title="Remove link">
+                    <svg
+                      width="12"
+                      height="12"
+                      viewBox="0 0 24 24"
+                      fill="currentColor">
+                      <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+                    </svg>
+                  </button>
+                </div>
+              )
             ))}
           </div>
 
