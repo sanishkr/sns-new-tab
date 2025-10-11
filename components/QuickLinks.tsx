@@ -45,6 +45,8 @@ export function QuickLinks({ className = "" }: QuickLinksProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [newLink, setNewLink] = useState({ name: "", url: "" })
   const [isIconView, setIsIconView] = useState(false)
+  const [editingLinkId, setEditingLinkId] = useState<string | null>(null)
+  const [editForm, setEditForm] = useState({ name: "", url: "" })
   const panelRef = useRef<HTMLDivElement>(null)
 
   // Load quick links and panel state from localStorage
@@ -145,6 +147,56 @@ export function QuickLinks({ className = "" }: QuickLinksProps) {
     saveToStorage(newLinks, isOpen)
   }
 
+  const startEditing = (link: QuickLink) => {
+    setEditingLinkId(link.id)
+    setEditForm({ name: link.name, url: link.url })
+    setIsEditing(false) // Close add form if open
+  }
+
+  const cancelEditing = () => {
+    setEditingLinkId(null)
+    setEditForm({ name: "", url: "" })
+  }
+
+  const saveEdit = () => {
+    if (!editForm.name.trim() || !editForm.url.trim() || !editingLinkId) return
+
+    let url = editForm.url
+    if (!url.startsWith("http://") && !url.startsWith("https://")) {
+      url = "https://" + url
+    }
+
+    const newLinks = quickLinks.map((link) =>
+      link.id === editingLinkId
+        ? {
+            ...link,
+            name: editForm.name.trim(),
+            url: url,
+            favicon: getFaviconUrl(url)
+          }
+        : link
+    )
+
+    setQuickLinks(newLinks)
+    saveToStorage(newLinks, isOpen)
+    cancelEditing()
+  }
+
+  const handleEditKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Escape") {
+      cancelEditing()
+    } else if (e.key === "Enter" && e.target instanceof HTMLInputElement) {
+      if (e.target.placeholder.includes("name")) {
+        // Move to URL field
+        const urlInput = e.target.nextElementSibling as HTMLInputElement
+        urlInput?.focus()
+      } else {
+        // Save on Enter in URL field
+        saveEdit()
+      }
+    }
+  }
+
   const openLink = (url: string) => {
     window.open(url, "_blank", "noopener,noreferrer")
   }
@@ -232,24 +284,80 @@ export function QuickLinks({ className = "" }: QuickLinksProps) {
                     />
                     <span className="hidden text-sm">🌐</span>
                   </div>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      removeLink(link.id)
-                    }}
-                    className="absolute -top-1 -right-1 opacity-0 group-hover:opacity-100 bg-red-500/80 hover:bg-red-500 text-white rounded-full p-0.5 transition-all duration-200"
-                    title="Remove link">
-                    <svg
-                      width="10"
-                      height="10"
-                      viewBox="0 0 24 24"
-                      fill="currentColor">
-                      <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
-                    </svg>
-                  </button>
+                  <div className="absolute -top-1 -right-1 flex gap-0.5 opacity-0 group-hover:opacity-100 transition-all duration-200">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        startEditing(link)
+                      }}
+                      className="bg-blue-500/80 hover:bg-blue-500 text-white rounded-full p-0.5"
+                      title="Edit link">
+                      <svg
+                        width="10"
+                        height="10"
+                        viewBox="0 0 24 24"
+                        fill="currentColor">
+                        <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
+                      </svg>
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        removeLink(link.id)
+                      }}
+                      className="bg-red-500/80 hover:bg-red-500 text-white rounded-full p-0.5"
+                      title="Remove link">
+                      <svg
+                        width="10"
+                        height="10"
+                        viewBox="0 0 24 24"
+                        fill="currentColor">
+                        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              ) : editingLinkId === link.id ? (
+                // Inline edit mode for detailed view
+                <div
+                  key={link.id}
+                  className="flex flex-col gap-1.5 p-1.5 rounded-md bg-white/5 border border-white/20">
+                  <input
+                    type="text"
+                    placeholder="Site name"
+                    value={editForm.name}
+                    onChange={(e) =>
+                      setEditForm({ ...editForm, name: e.target.value })
+                    }
+                    onKeyDown={handleEditKeyDown}
+                    autoFocus
+                    className="w-full bg-white/10 border border-white/20 rounded px-2 py-1 text-white placeholder-white/50 text-xs focus:outline-none focus:border-white/40"
+                  />
+                  <input
+                    type="url"
+                    placeholder="URL (e.g., github.com)"
+                    value={editForm.url}
+                    onChange={(e) =>
+                      setEditForm({ ...editForm, url: e.target.value })
+                    }
+                    onKeyDown={handleEditKeyDown}
+                    className="w-full bg-white/10 border border-white/20 rounded px-2 py-1 text-white placeholder-white/50 text-xs focus:outline-none focus:border-white/40"
+                  />
+                  <div className="flex gap-1.5">
+                    <button
+                      onClick={saveEdit}
+                      className="flex-1 bg-blue-500/80 hover:bg-blue-500 text-white text-xs py-1 px-2 rounded transition-colors">
+                      Save
+                    </button>
+                    <button
+                      onClick={cancelEditing}
+                      className="flex-1 bg-white/10 hover:bg-white/20 text-white text-xs py-1 px-2 rounded transition-colors">
+                      Cancel
+                    </button>
+                  </div>
                 </div>
               ) : (
-                // Detailed view
+                // Detailed view - normal display
                 <div
                   key={link.id}
                   draggable
@@ -280,6 +388,21 @@ export function QuickLinks({ className = "" }: QuickLinksProps) {
                   <button
                     onClick={(e) => {
                       e.stopPropagation()
+                      startEditing(link)
+                    }}
+                    className="opacity-0 group-hover:opacity-100 text-white/60 hover:text-blue-400 transition-all duration-200"
+                    title="Edit link">
+                    <svg
+                      width="12"
+                      height="12"
+                      viewBox="0 0 24 24"
+                      fill="currentColor">
+                      <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
+                    </svg>
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
                       removeLink(link.id)
                     }}
                     className="opacity-0 group-hover:opacity-100 text-white/40 hover:text-red-400 transition-all duration-200"
@@ -297,8 +420,50 @@ export function QuickLinks({ className = "" }: QuickLinksProps) {
             ))}
           </div>
 
+          {/* Edit Link Form (for icon view) */}
+          {editingLinkId && isIconView && (
+            <div className="border-t border-white/10 pt-2 space-y-1.5">
+              <div className="text-white/70 text-xs mb-1">
+                Edit: {quickLinks.find(l => l.id === editingLinkId)?.name}
+              </div>
+              <input
+                type="text"
+                placeholder="Site name"
+                value={editForm.name}
+                onChange={(e) =>
+                  setEditForm({ ...editForm, name: e.target.value })
+                }
+                onKeyDown={handleEditKeyDown}
+                autoFocus
+                className="w-full bg-white/10 border border-white/20 rounded px-2.5 py-1.5 text-white placeholder-white/50 text-xs focus:outline-none focus:border-white/40"
+              />
+              <input
+                type="url"
+                placeholder="URL (e.g., github.com)"
+                value={editForm.url}
+                onChange={(e) =>
+                  setEditForm({ ...editForm, url: e.target.value })
+                }
+                onKeyDown={handleEditKeyDown}
+                className="w-full bg-white/10 border border-white/20 rounded px-2.5 py-1.5 text-white placeholder-white/50 text-xs focus:outline-none focus:border-white/40"
+              />
+              <div className="flex gap-2">
+                <button
+                  onClick={saveEdit}
+                  className="flex-1 bg-blue-500/80 hover:bg-blue-500 text-white text-xs py-1.5 px-2.5 rounded transition-colors">
+                  Save
+                </button>
+                <button
+                  onClick={cancelEditing}
+                  className="flex-1 bg-white/10 hover:bg-white/20 text-white text-xs py-1.5 px-2.5 rounded transition-colors">
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* Add New Link Form */}
-          {isEditing && (
+          {isEditing && !editingLinkId && (
             <div className="border-t border-white/10 pt-2 space-y-1.5">
               <input
                 type="text"
