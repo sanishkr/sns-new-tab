@@ -17,6 +17,8 @@ import {
   saveWeatherPreferences
 } from "../utils/weatherService"
 import { DropdownMenu } from "./DropdownMenu"
+import { LocationSearch } from "./LocationSearch"
+import type { LocationResult } from "../utils/locationService"
 
 interface WeatherWidgetProps {
   className?: string
@@ -30,6 +32,7 @@ export function WeatherWidget({ className = "" }: WeatherWidgetProps) {
     getWeatherPreferences()
   )
   const [isExpanded, setIsExpanded] = useState(false)
+  const [showLocationSearch, setShowLocationSearch] = useState(false)
   const widgetRef = useRef<HTMLDivElement>(null)
 
   // Load weather data on mount and when preferences change
@@ -101,12 +104,15 @@ export function WeatherWidget({ className = "" }: WeatherWidgetProps) {
             country: "US"
           }
         }
+      } else if (preferences.customLocationData) {
+        // Use saved custom location data
+        location = preferences.customLocationData
       } else {
-        // Use custom location - fallback to San Francisco for now
+        // Fallback to San Francisco if no custom location set
         location = {
           lat: 37.7749,
           lon: -122.4194,
-          name: preferences.customLocation || "San Francisco",
+          name: "San Francisco",
           country: "US"
         }
       }
@@ -156,11 +162,51 @@ export function WeatherWidget({ className = "" }: WeatherWidgetProps) {
     loadWeatherData()
   }
 
+  const handleLocationSelect = (location: LocationResult) => {
+    console.log("Location selected:", location)
+    const newPreferences = {
+      ...preferences,
+      autoLocation: false,
+      customLocation: location.name,
+      customLocationData: {
+        lat: location.lat,
+        lon: location.lon,
+        name: location.name,
+        country: location.country
+      }
+    }
+    setPreferences(newPreferences)
+    saveWeatherPreferences(newPreferences)
+    setShowLocationSearch(false)
+
+    // Clear cache and reload weather for new location
+    localStorage.removeItem("weatherData")
+    localStorage.removeItem("weatherTimestamp")
+  }
+
+  const toggleAutoLocation = () => {
+    const newPreferences = {
+      ...preferences,
+      autoLocation: !preferences.autoLocation
+    }
+    setPreferences(newPreferences)
+    saveWeatherPreferences(newPreferences)
+
+    // Clear cache and reload
+    localStorage.removeItem("weatherData")
+    localStorage.removeItem("weatherTimestamp")
+  }
+
   const weatherMenuItems = [
     {
       label: `Switch to ${preferences.units === "metric" ? "°F" : "°C"}`,
       onClick: toggleUnits,
       icon: "🌡️"
+    },
+    {
+      label: preferences.autoLocation ? "Use Custom Location" : "Use Auto Location",
+      onClick: preferences.autoLocation ? () => setShowLocationSearch(true) : toggleAutoLocation,
+      icon: "📍"
     },
     {
       label: "Refresh",
@@ -273,8 +319,55 @@ export function WeatherWidget({ className = "" }: WeatherWidgetProps) {
                     {weatherData.location}
                     {weatherData.country && `, ${weatherData.country}`}
                   </span>
+                  {!preferences.autoLocation && (
+                    <button
+                      onClick={() => setShowLocationSearch(true)}
+                      className="ml-auto text-white/60 hover:text-white transition-colors text-xs underline"
+                      title="Change location">
+                      Change
+                    </button>
+                  )}
                 </div>
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* Location Search Modal */}
+        {showLocationSearch && (
+          <div className="absolute top-full right-0 mt-2 bg-black/90 backdrop-blur-lg rounded-lg shadow-lg border border-white/10 p-4 min-w-[300px] z-50">
+            <div className="flex items-center justify-between mb-3">
+              <h4 className="text-white font-medium text-sm">Search Location</h4>
+              <button
+                onClick={() => setShowLocationSearch(false)}
+                className="text-white/60 hover:text-white transition-colors"
+                aria-label="Close">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M12 4L4 12M4 4L12 12"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </button>
+            </div>
+            <LocationSearch
+              onLocationSelect={handleLocationSelect}
+              placeholder="Search for a city..."
+            />
+            <div className="mt-3 pt-3 border-t border-white/10">
+              <button
+                onClick={toggleAutoLocation}
+                className="text-xs text-white/60 hover:text-white transition-colors flex items-center gap-1">
+                <span>🌐</span>
+                <span>Use my current location instead</span>
+              </button>
             </div>
           </div>
         )}

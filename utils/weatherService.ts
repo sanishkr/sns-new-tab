@@ -26,6 +26,7 @@ export interface WeatherPreferences {
   units: "metric" | "imperial"
   autoLocation: boolean
   customLocation?: string
+  customLocationData?: LocationData // Store full location data for custom location
 }
 
 // Get user's location using browser geolocation
