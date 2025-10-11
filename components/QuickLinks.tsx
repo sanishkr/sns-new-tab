@@ -157,17 +157,17 @@ export function QuickLinks({ className = "" }: QuickLinksProps) {
       {isOpen && (
         <div
           ref={panelRef}
-          className="mt-2 backdrop-blur-lg rounded-lg shadow-lg border border-white/10 p-4 min-w-[280px] max-w-[320px]"
+          className="mt-2 backdrop-blur-lg rounded-lg shadow-lg border border-white/10 p-3 min-w-[260px] max-w-[300px]"
           style={{ backgroundColor: "#0000007d" }}>
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-white font-medium">Quick Links</h3>
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-white font-medium text-sm">Quick Links</h3>
             <button
               onClick={() => setIsEditing(!isEditing)}
               className="text-white/60 hover:text-white transition-colors"
               title="Add new link">
               <svg
-                width="16"
-                height="16"
+                width="14"
+                height="14"
                 viewBox="0 0 24 24"
                 fill="currentColor">
                 <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
@@ -176,7 +176,7 @@ export function QuickLinks({ className = "" }: QuickLinksProps) {
           </div>
 
           {/* Quick Links List */}
-          <div className="space-y-2 mb-3 max-h-[473px] overflow-y-auto quick-links-scroll">
+          <div className="space-y-1 mb-2 max-h-[473px] overflow-y-auto quick-links-scroll">
             {quickLinks.map((link, index) => (
               <div
                 key={link.id}
@@ -184,24 +184,24 @@ export function QuickLinks({ className = "" }: QuickLinksProps) {
                 onDragStart={(e) => handleDragStart(e, link)}
                 onDragOver={handleDragOver}
                 onDrop={(e) => handleDrop(e, index)}
-                className="flex items-center gap-3 p-2 rounded-lg hover:bg-white/10 cursor-pointer transition-colors group"
+                className="flex items-center gap-2 p-1.5 rounded-md hover:bg-white/10 cursor-pointer transition-colors group"
                 onClick={() => openLink(link.url)}>
                 <img
                   src={getFaviconUrl(link.url)}
                   alt=""
-                  className="w-5 h-5 flex-shrink-0"
+                  className="w-4 h-4 flex-shrink-0"
                   onError={(e) => {
                     const target = e.target as HTMLImageElement
                     target.style.display = "none"
                     target.nextElementSibling!.classList.remove("hidden")
                   }}
                 />
-                <span className="hidden text-xs">🌐</span>
+                <span className="hidden text-[10px]">🌐</span>
                 <div className="flex-1 min-w-0">
-                  <div className="text-white/90 text-sm font-medium truncate">
+                  <div className="text-white/90 text-xs font-medium truncate">
                     {link.name}
                   </div>
-                  <div className="text-white/60 text-xs truncate">
+                  <div className="text-white/60 text-[10px] truncate">
                     {link.url.replace(/^https?:\/\//, "")}
                   </div>
                 </div>
@@ -213,8 +213,8 @@ export function QuickLinks({ className = "" }: QuickLinksProps) {
                   className="opacity-0 group-hover:opacity-100 text-white/40 hover:text-red-400 transition-all duration-200"
                   title="Remove link">
                   <svg
-                    width="14"
-                    height="14"
+                    width="12"
+                    height="12"
                     viewBox="0 0 24 24"
                     fill="currentColor">
                     <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
@@ -226,7 +226,7 @@ export function QuickLinks({ className = "" }: QuickLinksProps) {
 
           {/* Add New Link Form */}
           {isEditing && (
-            <div className="border-t border-white/10 pt-3 space-y-2">
+            <div className="border-t border-white/10 pt-2 space-y-1.5">
               <input
                 type="text"
                 placeholder="Site name"
@@ -234,7 +234,7 @@ export function QuickLinks({ className = "" }: QuickLinksProps) {
                 onChange={(e) =>
                   setNewLink({ ...newLink, name: e.target.value })
                 }
-                className="w-full bg-white/10 border border-white/20 rounded px-3 py-2 text-white placeholder-white/50 text-sm focus:outline-none focus:border-white/40"
+                className="w-full bg-white/10 border border-white/20 rounded px-2.5 py-1.5 text-white placeholder-white/50 text-xs focus:outline-none focus:border-white/40"
               />
               <input
                 type="url"
@@ -243,12 +243,12 @@ export function QuickLinks({ className = "" }: QuickLinksProps) {
                 onChange={(e) =>
                   setNewLink({ ...newLink, url: e.target.value })
                 }
-                className="w-full bg-white/10 border border-white/20 rounded px-3 py-2 text-white placeholder-white/50 text-sm focus:outline-none focus:border-white/40"
+                className="w-full bg-white/10 border border-white/20 rounded px-2.5 py-1.5 text-white placeholder-white/50 text-xs focus:outline-none focus:border-white/40"
               />
               <div className="flex gap-2">
                 <button
                   onClick={addNewLink}
-                  className="flex-1 bg-white/20 hover:bg-white/30 text-white text-sm py-2 px-3 rounded transition-colors">
+                  className="flex-1 bg-white/20 hover:bg-white/30 text-white text-xs py-1.5 px-2.5 rounded transition-colors">
                   Add
                 </button>
                 <button
@@ -256,7 +256,7 @@ export function QuickLinks({ className = "" }: QuickLinksProps) {
                     setIsEditing(false)
                     setNewLink({ name: "", url: "" })
                   }}
-                  className="flex-1 bg-white/10 hover:bg-white/20 text-white text-sm py-2 px-3 rounded transition-colors">
+                  className="flex-1 bg-white/10 hover:bg-white/20 text-white text-xs py-1.5 px-2.5 rounded transition-colors">
                   Cancel
                 </button>
               </div>
