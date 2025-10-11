@@ -4,6 +4,7 @@ Transform your browsing experience with our custom new tab Edge extension! Built
 Key Features:
 Real-Time Clock: Stay on track with a beautifully displayed clock.
 Dynamic Greetings: Receive personalized greetings based on the time of day.
+Weather Widget: Get real-time weather updates for any location worldwide with our smart search feature. Search for any city, toggle between Celsius and Fahrenheit, and choose between auto-location or custom locations.
 Daily Rotating Backgrounds: Enjoy stunning gradient backgrounds that change every day.
 Quick Links: Manage your favorite websites with dual view modes (list/icon grid), add/edit/remove links, drag & drop reordering, and persistent storage
 Responsive Design: Optimized for all screen sizes, ensuring a seamless experience.

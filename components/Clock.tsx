@@ -4,12 +4,15 @@ import { useEffect, useState } from "react";
 
 import { DropdownMenu } from "./DropdownMenu"
 
+
 interface ClockProps {
   className?: string
   onToggleDateVisibility?: () => void
   showDate?: boolean
   onToggleQuotesVisibility?: () => void
   showQuotes?: boolean
+  onToggleWeatherVisibility?: () => void
+  showWeather?: boolean
 }
 
 export function Clock({
@@ -17,7 +20,9 @@ export function Clock({
   onToggleDateVisibility,
   showDate = true,
   onToggleQuotesVisibility,
-  showQuotes = true
+  showQuotes = true,
+  onToggleWeatherVisibility,
+  showWeather = true
 }: ClockProps) {
   const [currentTime, setCurrentTime] = useState(new Date())
 
@@ -47,6 +52,11 @@ export function Clock({
       label: showQuotes ? "Hide quotes" : "Show quotes",
       onClick: () => onToggleQuotesVisibility?.(),
       icon: showQuotes ? "💭" : "📝"
+    },
+    {
+      label: showWeather ? "Hide weather" : "Show weather",
+      onClick: () => onToggleWeatherVisibility?.(),
+      icon: showWeather ? "🌤️" : "☁️"
     }
   ]
 

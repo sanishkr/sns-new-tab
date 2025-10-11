@@ -88,7 +88,7 @@ export function DropdownMenu({
           ref={menuRef}
           className={`absolute ${
             position === "above" ? "bottom-full mb-2" : "top-full mt-2"
-          } ${horizontalAlign === "left" ? "left-0" : "right-0"} bg-black/80 backdrop-blur-lg rounded-lg shadow-lg border border-white/10 min-w-[140px] z-50`}>
+          } ${horizontalAlign === "left" ? "left-0" : "right-0"} bg-black/80 backdrop-blur-lg rounded-lg shadow-lg border border-white/10 min-w-[150px] z-50`}>
           {items.map((item, index) => (
             <button
               key={index}
