@@ -29,6 +29,9 @@
     "typescript": "5.3.3"
   },
   "manifest": {
-    "host_permissions": []
+    "host_permissions": [],
+    "permissions": [
+      "geolocation"
+    ]
   }
 }
