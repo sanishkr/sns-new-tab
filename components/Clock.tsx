@@ -1,9 +1,6 @@
-import { useEffect, useState } from "react";
-
-
+import { useEffect, useState } from "react"
 
 import { DropdownMenu } from "./DropdownMenu"
-
 
 interface ClockProps {
   className?: string
@@ -13,6 +10,8 @@ interface ClockProps {
   showQuotes?: boolean
   onToggleWeatherVisibility?: () => void
   showWeather?: boolean
+  onToggleFridayVisibility?: () => void
+  showFriday?: boolean
 }
 
 export function Clock({
@@ -22,7 +21,9 @@ export function Clock({
   onToggleQuotesVisibility,
   showQuotes = true,
   onToggleWeatherVisibility,
-  showWeather = true
+  showWeather = true,
+  onToggleFridayVisibility,
+  showFriday = false
 }: ClockProps) {
   const [currentTime, setCurrentTime] = useState(new Date())
 
@@ -57,6 +58,11 @@ export function Clock({
       label: showWeather ? "Hide weather" : "Show weather",
       onClick: () => onToggleWeatherVisibility?.(),
       icon: showWeather ? "🌤️" : "☁️"
+    },
+    {
+      label: showFriday ? "Show greeting" : "Is it Friday?",
+      onClick: () => onToggleFridayVisibility?.(),
+      icon: showFriday ? "👋" : "🎊"
     }
   ]
 
@@ -69,7 +75,7 @@ export function Clock({
       {/* Three dots menu - only visible on hover */}
       <DropdownMenu
         items={clockMenuItems}
-        className="absolute top-16 left-full ml-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+        className="absolute ml-2 transition-opacity duration-300 opacity-0 top-16 left-full group-hover:opacity-100"
       />
     </div>
   )

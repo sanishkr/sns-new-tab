@@ -6,6 +6,7 @@ import {
   BackgroundManager,
   Clock,
   DateDisplay,
+  FridayGreeting,
   Greeting,
   QuickLinks,
   QuoteSection,
@@ -27,6 +28,7 @@ function NewTab() {
   const [showDate, setShowDate] = useState(true)
   const [showQuotes, setShowQuotes] = useState(true)
   const [showWeather, setShowWeather] = useState(false)
+  const [showFriday, setShowFriday] = useState(false)
 
   // Load preferences from localStorage on mount
   useEffect(() => {
@@ -43,6 +45,11 @@ function NewTab() {
     const savedShowWeather = localStorage.getItem("showWeather")
     if (savedShowWeather !== null) {
       setShowWeather(JSON.parse(savedShowWeather))
+    }
+
+    const savedShowFriday = localStorage.getItem("showFriday")
+    if (savedShowFriday !== null) {
+      setShowFriday(JSON.parse(savedShowFriday))
     }
   }, [])
 
@@ -65,6 +72,13 @@ function NewTab() {
     setShowWeather(newShowWeather)
     // Save preference to localStorage
     localStorage.setItem("showWeather", JSON.stringify(newShowWeather))
+  }
+
+  const toggleFridayVisibility = () => {
+    const newShowFriday = !showFriday
+    setShowFriday(newShowFriday)
+    // Save preference to localStorage
+    localStorage.setItem("showFriday", JSON.stringify(newShowFriday))
   }
   // useEffect(() => {
   //   // Set viewport meta tag programmatically to prevent zoom
@@ -202,11 +216,17 @@ function NewTab() {
             showQuotes={showQuotes}
             onToggleWeatherVisibility={toggleWeatherVisibility}
             showWeather={showWeather}
+            onToggleFridayVisibility={toggleFridayVisibility}
+            showFriday={showFriday}
           />
           {showDate && (
             <DateDisplay className="text-3xl font-light tracking-wider opacity-80 mb-6" />
           )}
-          <Greeting className="text-4xl font-light tracking-wide opacity-90" />
+          {showFriday ? (
+            <FridayGreeting className="text-4xl font-light tracking-wide opacity-90" />
+          ) : (
+            <Greeting className="text-4xl font-light tracking-wide opacity-90" />
+          )}
         </div>
 
         {/* Quote Section - Bottom of screen */}

@@ -1,6 +1,7 @@
 export { Clock } from "./Clock"
 export { DateDisplay } from "./DateDisplay"
 export { Greeting } from "./Greeting"
+export { FridayGreeting } from "./FridayGreeting"
 export { QuoteSection } from "./QuoteSection"
 export { BackgroundManager } from "./BackgroundManager"
 export { DropdownMenu } from "./DropdownMenu"
